@@ -1,25 +1,25 @@
-import { createSignal } from 'solid-js'
-import { useEventListener } from '../useEventListener'
-import { defaultDocument } from '../_configurable'
-import type { Accessor } from 'solid-js'
-import type { WindowEventName } from '../useEventListener'
-import type { ConfigurableDocument } from '../_configurable'
+import { createSignal } from "solid-js"
+import { useEventListener } from "../useEventListener"
+import { defaultDocument } from "../_configurable"
+import type { Accessor } from "solid-js"
+import type { WindowEventName } from "../useEventListener"
+import type { ConfigurableDocument } from "../_configurable"
 
 export type KeyModifier =
-  | 'Alt'
-  | 'AltGraph'
-  | 'CapsLock'
-  | 'Control'
-  | 'Fn'
-  | 'FnLock'
-  | 'Meta'
-  | 'NumLock'
-  | 'ScrollLock'
-  | 'Shift'
-  | 'Symbol'
-  | 'SymbolLock'
+  | "Alt"
+  | "AltGraph"
+  | "CapsLock"
+  | "Control"
+  | "Fn"
+  | "FnLock"
+  | "Meta"
+  | "NumLock"
+  | "ScrollLock"
+  | "Shift"
+  | "Symbol"
+  | "SymbolLock"
 
-const defaultEvents: WindowEventName[] = ['mousedown', 'mouseup', 'keydown', 'keyup']
+const defaultEvents: WindowEventName[] = ["mousedown", "mouseup", "keydown", "keyup"]
 
 export interface UseModifierOptions<Initial> extends ConfigurableDocument {
   /**
@@ -35,9 +35,18 @@ export interface UseModifierOptions<Initial> extends ConfigurableDocument {
    * @default null
    */
   initial?: Initial
+
+  /**
+   * Prevent default when modifier change
+   *
+   * @default false
+   */
+  preventDefault?: boolean
 }
 
-export type UseKeyModifierReturn<Initial> = Accessor<Initial extends boolean ? boolean : boolean | null>
+export type UseKeyModifierReturn<Initial> = Accessor<
+  Initial extends boolean ? boolean : boolean | null
+>
 
 /**
  * Reactive [Modifier State](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/getModifierState).
@@ -48,14 +57,20 @@ export function useKeyModifier<Initial extends boolean | null>(
   modifier: KeyModifier,
   options: UseModifierOptions<Initial> = {}
 ): UseKeyModifierReturn<Initial> {
-  const { events = defaultEvents, document = defaultDocument, initial = null } = options
+  const {
+    events = defaultEvents,
+    document = defaultDocument,
+    initial = null,
+    preventDefault = false
+  } = options
 
   const [state, setState] = createSignal<boolean>(initial!)
 
   if (document) {
     events.forEach(listenerEvent => {
       useEventListener(document, listenerEvent, (evt: KeyboardEvent | MouseEvent) => {
-        if (typeof evt.getModifierState === 'function') setState(evt.getModifierState(modifier))
+        if (typeof evt.getModifierState === "function") setState(evt.getModifierState(modifier))
+        if (preventDefault && (evt as KeyboardEvent).key === modifier) evt.preventDefault()
       })
     })
   }

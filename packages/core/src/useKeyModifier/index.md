@@ -9,9 +9,9 @@ Reactive [Modifier State](https://developer.mozilla.org/en-US/docs/Web/API/Keybo
 ## Usage
 
 ```ts
-import { useKeyModifier } from 'solidjs-use'
+import { useKeyModifier } from "solidjs-use"
 
-const capsLockState = useKeyModifier('CapsLock')
+const capsLockState = useKeyModifier("CapsLock")
 
 console.log(capsLockState())
 ```
@@ -21,9 +21,9 @@ console.log(capsLockState())
 You can customize which events will prompt the state to update. By default, these are `mouseup`, `mousedown`, `keyup`, `keydown`. To customize these events:
 
 ```ts
-import { useKeyModifier } from 'solidjs-use'
+import { useKeyModifier } from "solidjs-use"
 
-const capsLockState = useKeyModifier('CapsLock', { events: ['mouseup', 'mousedown'] })
+const capsLockState = useKeyModifier("CapsLock", { events: ["mouseup", "mousedown"] })
 
 console.log(capsLockState()) // null
 
@@ -39,6 +39,14 @@ console.log(capsLockState()) // true
 By default, the returned ref will be `Accessor<null>` until the first event is received. You can explicitly pass the initial state to it via:
 
 ```ts
-const capsLockState1 = useKeyModifier('CapsLock') // Accessor<boolean | null>
-const capsLockState2 = useKeyModifier('CapsLock', { initial: false }) // Accessor<boolean>
+const capsLockState1 = useKeyModifier("CapsLock") // Accessor<boolean | null>
+const capsLockState2 = useKeyModifier("CapsLock", { initial: false }) // Accessor<boolean>
+```
+
+## Prevent Default
+
+You can prevent default by `preventDefault` option. It will only prevent the modifier you specify.
+
+```ts
+const capsLockState2 = useKeyModifier("CapsLock", { preventDefault: false })
 ```
